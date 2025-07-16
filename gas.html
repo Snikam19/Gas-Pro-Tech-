@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gas Leak Detection Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            padding-top: 20px;
+        }
+        .navbar {
+            background-color: #343a40;
+            color: white;
+        }
+        .card-header {
+            font-weight: bold;
+            background-color: #007bff;
+            color: white;
+        }
+        #realTimeGasLevel {
+            font-size: 2rem;
+            font-weight: bold;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-dark">
+    <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1">Gas Leak Detection System</span>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+
+        <!-- Real-time Gas Level -->
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header">Real-time Gas Levels</div>
+                <div class="card-body">
+                    <p>Current Gas Concentration: <span id="realTimeGasLevel">0</span> ppm</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gas Leak Logs -->
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header">Gas Leak Logs</div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Date</th>
+                                <th scope="col">Time</th>
+                                <th scope="col">Gas Level (ppm)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gasLeakLogs">
+                            <!-- Logs will be dynamically inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Graph for Gas Leak Analysis -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-3">
+                <div class="card-header">Gas Leak Analysis</div>
+                <div class="card-body">
+                    <canvas id="gasLeakChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Sample real-time gas level (replace this with actual data fetching from backend API)
+    const gasLevelElement = document.getElementById('realTimeGasLevel');
+    let gasLevel = 0;
+
+    function updateGasLevel() {
+        gasLevel = Math.floor(Math.random() * 100);  // Simulating real-time gas level between 0 and 100 ppm
+        gasLevelElement.innerHTML = gasLevel;
+    }
+
+    // Update gas level every 3 seconds (simulating real-time updates)
+    setInterval(updateGasLevel, 3000);
+
+    // Sample gas leak logs (replace this with actual data fetching from backend API)
+    const gasLeakLogs = [
+        { date: '2024-10-10', time: '14:00', level: 85 },
+        { date: '2024-10-11', time: '16:30', level: 90 },
+        { date: '2024-10-12', time: '08:15', level: 95 }
+    ];
+
+    const logsTable = document.getElementById('gasLeakLogs');
+
+    function updateGasLeakLogs() {
+        logsTable.innerHTML = '';
+        gasLeakLogs.forEach(log => {
+            const row = `<tr>
+                            <td>${log.date}</td>
+                            <td>${log.time}</td>
+                            <td>${log.level}</td>
+                        </tr>`;
+            logsTable.innerHTML += row;
+        });
+    }
+
+    // Load logs on page load
+    window.onload = updateGasLeakLogs;
+
+    // Gas Leak Analysis Chart
+    const ctx = document.getElementById('gasLeakChart').getContext('2d');
+    const gasLeakChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: gasLeakLogs.map(log => `${log.date} ${log.time}`),
+            datasets: [{
+                label: 'Gas Level (ppm)',
+                data: gasLeakLogs.map(log => log.level),
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 2,
+                fill: false
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date and Time'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Gas Level (ppm)'
+                    },
+                    min: 0,
+                    max: 100
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
